@@ -2,23 +2,23 @@ const MemberController = require("../controller/Members.controller");
 
 var router = require("express").Router();
 
-// Create a new Tutorial
+// Create a new member
 router.post("/members", MemberController.create);
 
-// Retrieve all Tutorials
+// Retrieve all members
 router.get("/members", MemberController.findAll);
 
-// Retrieve all published Tutorials
-//   router.get("/published", tutorials.findAllPublished);
+// Retrieve a single Member with id
+router.get("/members/:id", MemberController.findOne);
 
-//   // Retrieve a single Tutorial with id
-//   router.get("/:id", tutorials.findOne);
-
-//   // Update a Tutorial with id
-//   router.put("/:id", tutorials.update);
+// Update a Tutorial with id
+router.put("/members/:id", MemberController.update);
 
 //   // Delete a Tutorial with id
-//   router.delete("/:id", tutorials.delete);
+router.delete("/members/:id", MemberController.delete);
+
+// Retrieve all members
+//   router.get("/published", tutorials.findAllPublished);
 
 //   // Delete all Tutorials
 //   router.delete("/", tutorials.deleteAll);

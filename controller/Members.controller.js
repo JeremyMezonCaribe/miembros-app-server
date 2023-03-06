@@ -1,7 +1,7 @@
 const db = require("../models");
 const Members = db.Members;
 
-// Create and Save a new Tutorial
+// Create and Save a new Member
 exports.create = (req, res) => {
   // Validate request
   if (!req.body.name) {
@@ -9,7 +9,7 @@ exports.create = (req, res) => {
     return;
   }
 
-  // Create a Tutorial
+  // Create a Member
   const member = new Members({
     name: req.body.name,
     description: req.body.description,
@@ -17,7 +17,7 @@ exports.create = (req, res) => {
     imageUrl: req.body.imageUrl,
   });
 
-  // Save Tutorial in the database
+  // Save Member in the database
   member
     .save(member)
     .then((data) => {
@@ -31,7 +31,7 @@ exports.create = (req, res) => {
     });
 };
 
-// Retrieve all Tutorials from the database.
+// Retrieve all Members from the database.
 exports.findAll = (req, res) => {
   const name = req.query.name;
   var condition = name
@@ -45,22 +45,79 @@ exports.findAll = (req, res) => {
     .catch((err) => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while retrieving tutorials.",
+          err.message || "Some error occurred while retrieving Members.",
       });
     });
 };
 
-// Find a single Tutorial with an id
-exports.findOne = (req, res) => {};
+// Find a single Member with an id
+exports.findOne = (req, res) => {
+  const id = req.params.id;
 
-// Update a Tutorial by the id in the request
-exports.update = (req, res) => {};
+  Members.findById(id)
+    .then(data => {
+      if (!data)
+        res.status(404).send({ message: "Not found Member with id " + id });
+      else res.send(data);
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .send({ message: "Error retrieving Member with id=" + id });
+    });
+};
 
-// Delete a Tutorial with the specified id in the request
-exports.delete = (req, res) => {};
+// Update a Member by the id in the request
+exports.update = (req, res) => {
 
-// Delete all Tutorials from the database.
+  if (!req.body) {
+    return res.status(400).send({
+      message: "Data to update can not be empty!"
+    });
+  }
+
+  const id = req.params.id;
+
+  Members.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+    .then(data => {
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot update Member with id=${id}. Maybe Tutorial was not found!`
+        });
+      } else res.send({ message: "Member was updated successfully." });
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Error updating Tutorial with id=" + id
+      });
+    });
+};
+
+// Delete a Member with the specified id in the request
+exports.delete = (req, res) => {
+
+  const id = req.params.id;
+  Members.findByIdAndRemove(id)
+    .then(data => {
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot delete Member with id=${id}. Maybe Tutorial was not found!`
+        });
+      } else {
+        res.send({
+          message: "Member was deleted successfully!"
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Could not delete Member with id=" + id
+      });
+    });
+};
+
+// Delete all Member from the database.
 exports.deleteAll = (req, res) => {};
 
-// Find all published Tutorials
+// Find all published Members
 exports.findAllPublished = (req, res) => {};
